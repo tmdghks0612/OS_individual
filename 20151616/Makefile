@@ -1,6 +1,6 @@
 all : list.o hash.o bitmap.o main.o testlib
 CC = gcc
-CFLAGS = -W
+CFLAGS = -W -g
 
 main.o : 
 	$(CC) $(CFLAGS) -c main.c -o $@
