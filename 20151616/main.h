@@ -7,12 +7,11 @@
 #define MAX_INPUT 100
 #define MAX_LISTS 50
 
+#define MAX_NAME_LENGTH 20
+#define MAX_STRUCTURE_NAME 10
+
 char* instruction[] = {
 	"create","dumpdata","delete","quit","list"
-};
-
-char* listInstruction[] = {
-	"push_back", "pop_back", "pop_front", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle"
 };
 
 enum Inst{
@@ -20,7 +19,12 @@ enum Inst{
 	DUMPDATA = 1,
 	DELETE = 2,
 	QUIT = 3,
-	LIST = 4
+	INST_LIST = 4
+};
+enum Inst instNum;
+
+char* listInstruction[] = {
+	"push_back", "pop_back", "pop_front", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle"
 };
 
 enum ListOp{
@@ -37,13 +41,24 @@ enum ListOp{
 	SWAP = 10,
 	SHUFFLE = 11
 };
+enum ListOp instListNum;
+
+char* dataStructure[] = {
+	"list", "hashtable", "bitmap"
+};
+
+enum DataStructure{
+	LIST = 0,
+	HASHTABLE = 1,
+	BITMAP = 2
+};
+enum DataStructure dataStructureNum;
 
 bool inputCmpInst(char* input);
 void inputCmpListInst(char* input);
 
+void createDataStructure(char* input);
 
-enum Inst instName;
-enum ListOp instListName;
-
-struct list lists[MAX_LISTS];
+struct list* lists[MAX_LISTS];
+char* listNames[MAX_LISTS];
 int listNum=0;

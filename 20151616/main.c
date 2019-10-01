@@ -16,46 +16,75 @@ int main(){
 }
 
 bool inputCmpInst(char* input){
-	if(!strcmp(input, instruction[instName = CREATE])){
+	if(!strncmp(input, instruction[instNum = CREATE], 6)){
+		createDataStructure(input+7);
+		//send after parts "create "
 		return true;
 	}
-	else if(!strcmp(input, instruction[instName = DUMPDATA])){
+	else if(!strcmp(input, instruction[instNum = DUMPDATA])){
 		return true;
 	}
-	else if(!strcmp(input, instruction[instName = QUIT])){
+	else if(!strcmp(input, instruction[instNum = QUIT])){
 		return false;
 	}
-	else if(!strncmp(input, instruction[instName = LIST], 4)){
+	else if(!strncmp(input, instruction[instNum = INST_LIST], 4)){
 		inputCmpListInst(input+5);
 		//send after parts "list_"
 		return true;
 	}
 }
 
+void createDataStructure(char* input){
+	char dataStructureName[MAX_NAME_LENGTH];
+	char dataStructureType[MAX_STRUCTURE_NAME];
+	sscanf(input,"%s %s", dataStructureType, dataStructureName);
+	//dataStructureType contains type of structure. dataStructureName contains the name of it
+	if(!strcmp(dataStructureType, dataStructure[dataStructureNum = LIST])){
+
+		//malloc first!
+		lists[listNum] = (struct list*)malloc(sizeof(struct list));
+		listNames[listNum] = (char*)malloc(sizeof(char) * MAX_NAME_LENGTH);
+
+		//initialize operation
+		list_init(lists[listNum]);
+		strcpy(listNames[listNum],dataStructureName);
+
+		printf("name : %s\n",listNames[listNum]);
+		//lists[0]->head
+		listNum++;
+	}
+	else if(!strcmp(dataStructureType, dataStructure[dataStructureNum = HASHTABLE])){
+	}
+	else if(!strcmp(dataStructureType, dataStructure[dataStructureNum = BITMAP])){
+	}
+
+	return;
+}
+
 void inputCmpListInst(char* input){
-	if(!strcmp(input, listInstruction[instListName = PUSH_BACK])){
+	if(!strcmp(input, listInstruction[instListNum = PUSH_BACK])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = POP_BACK])){
+	else if(!strcmp(input, listInstruction[instListNum = POP_BACK])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = POP_FRONT])){
+	else if(!strcmp(input, listInstruction[instListNum = POP_FRONT])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = FRONT])){
+	else if(!strcmp(input, listInstruction[instListNum = FRONT])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = BACK])){
+	else if(!strcmp(input, listInstruction[instListNum = BACK])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = INSERT_ORDERED])){
+	else if(!strcmp(input, listInstruction[instListNum = INSERT_ORDERED])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = EMPTY])){
+	else if(!strcmp(input, listInstruction[instListNum = EMPTY])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = SIZE])){
+	else if(!strcmp(input, listInstruction[instListNum = SIZE])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = MAX])){
+	else if(!strcmp(input, listInstruction[instListNum = MAX])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = MIN])){
+	else if(!strcmp(input, listInstruction[instListNum = MIN])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = SWAP])){
+	else if(!strcmp(input, listInstruction[instListNum = SWAP])){
 	}
-	else if(!strcmp(input, listInstruction[instListName = SHUFFLE])){
+	else if(!strcmp(input, listInstruction[instListNum = SHUFFLE])){
 	}
 	return;
 }
