@@ -10,6 +10,8 @@
 #define MAX_NAME_LENGTH 20
 #define MAX_STRUCTURE_NAME 10
 
+#define MAX_LISTOP_LENGTH 15
+#define MAX_INST_LENGTH 10
 char* instruction[] = {
 	"create","dumpdata","delete","quit","list"
 };
@@ -29,17 +31,18 @@ char* listInstruction[] = {
 
 enum ListOp{
 	PUSH_BACK = 0,
-	POP_BACK = 1,
-	POP_FRONT = 2,
-	FRONT = 3,
-	BACK = 4,
-	INSERT_ORDERED = 5,
-	EMPTY = 6,
-	SIZE = 7,
-	MAX = 8,
-	MIN = 9,
-	SWAP = 10,
-	SHUFFLE = 11
+	PUSH_FRONT,
+	POP_BACK,
+	POP_FRONT,
+	FRONT,
+	BACK,
+	INSERT_ORDERED,
+	EMPTY,
+	SIZE,
+	MAX,
+	MIN,
+	SWAP,
+	SHUFFLE
 };
 enum ListOp instListNum;
 
@@ -58,7 +61,11 @@ bool inputCmpInst(char* input);
 void inputCmpListInst(char* input);
 
 void createDataStructure(char* input);
+void dumpDataStructure(char* input);
 
 struct list* lists[MAX_LISTS];
 char* listNames[MAX_LISTS];
 int listNum=0;
+
+struct list_item listItems[MAX_LISTS];
+
