@@ -26,23 +26,23 @@ enum Inst{
 enum Inst instNum;
 
 char* listInstruction[] = {
-	"push_back", "pop_back", "pop_front", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle"
+	"push_back", "push_front", "pop_back", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle"
 };
 
 enum ListOp{
 	PUSH_BACK = 0,
-	PUSH_FRONT,
-	POP_BACK,
-	POP_FRONT,
-	FRONT,
-	BACK,
-	INSERT_ORDERED,
-	EMPTY,
-	SIZE,
-	MAX,
-	MIN,
-	SWAP,
-	SHUFFLE
+	PUSH_FRONT= 1,
+	POP_BACK = 2,
+	POP_FRONT = 3,
+	FRONT = 4,
+	BACK = 5,
+	INSERT_ORDERED = 6,
+	EMPTY = 7,
+	SIZE = 8,
+	MAX = 9,
+	MIN = 10,
+	SWAP = 11,
+	SHUFFLE = 12
 };
 enum ListOp instListNum;
 
@@ -63,9 +63,13 @@ void inputCmpListInst(char* input);
 void createDataStructure(char* input);
 void dumpDataStructure(char* input);
 
+//variables  for list
 struct list* lists[MAX_LISTS];
 char* listNames[MAX_LISTS];
 int listNum=0;
 
 struct list_item listItems[MAX_LISTS];
 
+//functions for list
+
+struct list* getListpointerByName(char* name);

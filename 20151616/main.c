@@ -44,19 +44,19 @@ void dumpDataStructure(char* input){
 	char dataStructureName[MAX_NAME_LENGTH];
 	sscanf(input,"%s", dataStructureName);
 	//dataStructureType contains type of structure. dataStructureName contains the name of it
-	for(i=0;i<MAX_LISTS;++i){
-		if(!strcmp(dataStructureName,listNames[i])){
-			currList = lists[i];
-			for(struct list_elem* e = list_begin(currList);e != list_tail(currList);e = list_next(e)){
-				struct list_item *f = list_entry(e, struct list_item, elem);
-				printf("%d ", f->data);
-			}
-			printf("\n");
-			return;
+	if(currList = getListpointerByName(dataStructureName)){
+		for(struct list_elem* e = list_begin(currList);e != list_tail(currList);e = list_next(e)){
+			struct list_item *f = list_entry(e, struct list_item, elem);
+			printf("%d ", f->data);
 		}
+		printf("\n");
+		return;
 	}
-//write dumpdata for hashtable
-//write dumpdata for bitmap
+
+
+	
+	//write dumpdata for hashtable
+	//write dumpdata for bitmap
 	return;
 
 }
@@ -98,19 +98,10 @@ void inputCmpListInst(char* input){
 	int i=0;
 	sscanf(input,"%s %s %d",listOperationName,dataStructureName,&newdata);
 	//search for list with name of dataStructureName
-	for(i=0;i<MAX_LISTS;++i){
-		if(!strcmp(dataStructureName,listNames[i])){
-			break;
-		}
-	}
-	if(i >= MAX_LISTS){
-		//no list named as dataStructureName
+	if(!(currList = getListpointerByName(dataStructureName))){
 		return;
 	}
-	currList = lists[i];
-	//currListItem = listItems[i];
 	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_BACK])){
-		struct list_elem currHead = currList->head;
 		struct list_elem* newnodep;
 		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
 
@@ -122,12 +113,31 @@ void inputCmpListInst(char* input){
 
 	}
 	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_FRONT])){
+		struct list_elem* newnodep;
 		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
+
 		list_push_front(currList,newnode);
+		newnodep = list_head(currList)->next;
+
+		struct list_item* itemp = list_entry(newnodep, struct list_item, elem);
+		itemp->data = newdata;
+
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = POP_BACK])){
+		struct list_elem* endnodep;
+		endnodep = list_tail(currList)->prev;
+
+		struct list_item* itemp = list_entry(endnodep, struct list_item, elem);
+		list_pop_back(currList);
+		free(itemp);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = POP_FRONT])){
+		struct list_elem* startnodep;
+		startnodep = list_head(currList)->next;
+
+		struct list_item* itemp = list_entry(startnodep, struct list_item, elem);
+		list_pop_front(currList);
+		free(itemp);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = FRONT])){
 		//printf("%d\n",list_begin(currList));
@@ -151,4 +161,14 @@ void inputCmpListInst(char* input){
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SHUFFLE])){
 	}
 	return;
+}
+
+struct list* getListpointerByName(char* name){
+	int i=0;
+	for(i=0;i<MAX_LISTS;++i){
+		if(!strcmp(name,listNames[i])){
+			return lists[i];
+		}
+	}
+	return NULL;
 }
