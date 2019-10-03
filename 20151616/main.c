@@ -94,9 +94,9 @@ void inputCmpListInst(char* input){
 	struct list_items* currListItem;
 	char listOperationName[MAX_LISTOP_LENGTH];
 	char dataStructureName[MAX_NAME_LENGTH];
-	int newdata;
+	int newdata, newdata2;
 	int i=0;
-	sscanf(input,"%s %s %d",listOperationName,dataStructureName,&newdata);
+	sscanf(input,"%s %s %d %d",listOperationName,dataStructureName,&newdata,&newdata2);
 	//search for list with name of dataStructureName
 	if(!(currList = getListpointerByName(dataStructureName))){
 		return;
@@ -140,25 +140,60 @@ void inputCmpListInst(char* input){
 		free(itemp);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = FRONT])){
-		//printf("%d\n",list_begin(currList));
+		struct list_elem* startnodep;
+		startnodep = list_head(currList)->next;
+
+		struct list_item* itemp = list_entry(startnodep, struct list_item, elem);
+		printf("%d\n",itemp->data);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = BACK])){
-		//printf("%d\n",list_rbegin(currList));
+		struct list_elem* endnodep;
+		endnodep = list_tail(currList)->prev;
+
+		struct list_item* itemp = list_entry(endnodep, struct list_item, elem);
+		printf("%d\n",itemp->data);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT_ORDERED])){
+		/*struct list_elem
+		  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@how to use list_less_func by pointer??
+		list_insert_ordered(struct list*, struct list_elem*, list_less_func*, void*);*/
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = EMPTY])){
+		if(list_empty(currList)){
+			printf("true\n");
+		}
+		else{
+			printf("false\n");
+		}
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SIZE])){
+		printf("%d\n",(int)list_size(currList));
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = MAX])){
-		//printf("%d\n",list_max(currList,))
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@how to use list_less_func
+		//list_max(currList, )
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = MIN])){
+
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SWAP])){
+		struct list_elem* node1 = list_head(currList);
+		struct list_elem* node2 = list_head(currList);
+
+		for(int i=0;i<newdata;++i){
+			node1 = list_next(node1);
+		}
+		for(int i=0;i<newdata2;++i){
+			node2 = list_next(node2);
+		}
+		struct list_item* itemp1 = list_entry(node1, struct list_item, elem);
+		struct list_item* itemp2 = list_entry(node2, struct list_item, elem);
+		//swap(itemp1->data, itemp2->data);
+		//swap(&node1, &node2);
+		//swap implicit declarationd@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SHUFFLE])){
+		//no shuffle? @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	}
 	return;
 }

@@ -149,6 +149,8 @@ bool list_empty (struct list *);
 
 /* Miscellaneous. */
 void list_reverse (struct list *);
+
+static void swap (struct list_elem **a, struct list_elem **b); 
 
 /* Compares the value of two list elements A and B, given
    auxiliary data AUX.  Returns true if A is less than B, or
@@ -168,5 +170,6 @@ void list_unique (struct list *, struct list *duplicates,
 /* Max and min. */
 struct list_elem *list_max (struct list *, list_less_func *, void *aux);
 struct list_elem *list_min (struct list *, list_less_func *, void *aux);
+
 
 #endif /* lib/kernel/list.h */
