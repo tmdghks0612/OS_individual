@@ -151,6 +151,7 @@ bool list_empty (struct list *);
 void list_reverse (struct list *);
 
 static void swap (struct list_elem **a, struct list_elem **b); 
+void list_swap(struct list_elem *a, struct list_elem *b);
 
 /* Compares the value of two list elements A and B, given
    auxiliary data AUX.  Returns true if A is less than B, or
@@ -158,6 +159,7 @@ static void swap (struct list_elem **a, struct list_elem **b);
 typedef bool list_less_func (const struct list_elem *a,
                              const struct list_elem *b,
                              void *aux);
+bool func(const struct list_elem *a,const struct list_elem *b, void *aux);
 
 /* Operations on lists with ordered elements. */
 void list_sort (struct list *,

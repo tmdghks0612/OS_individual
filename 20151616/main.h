@@ -26,7 +26,7 @@ enum Inst{
 enum Inst instNum;
 
 char* listInstruction[] = {
-	"push_back", "push_front", "pop_back", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle"
+	"push_back", "push_front", "pop_back","pop_front", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle", "remove", "sort", "insert", "reverse", "splice", "unique"
 };
 
 enum ListOp{
@@ -42,7 +42,13 @@ enum ListOp{
 	MAX = 9,
 	MIN = 10,
 	SWAP = 11,
-	SHUFFLE = 12
+	SHUFFLE = 12,
+	REMOVE = 13,
+	SORT = 14,
+	INSERT = 15,
+	REVERSE = 16,
+	SPLICE = 17,
+	UNIQUE = 18
 };
 enum ListOp instListNum;
 
@@ -59,9 +65,11 @@ enum DataStructure dataStructureNum;
 
 bool inputCmpInst(char* input);
 void inputCmpListInst(char* input);
+void inputCmpHashtableInst(char* input);
 
 void createDataStructure(char* input);
 void dumpDataStructure(char* input);
+void deleteDataStructure(char* input);
 
 //variables  for list
 struct list* lists[MAX_LISTS];

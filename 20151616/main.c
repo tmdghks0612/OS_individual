@@ -18,7 +18,7 @@ int main(){
 bool inputCmpInst(char* input){
 	int i=0;
 	char instructionName[MAX_INST_LENGTH];
-	char buffer[20];
+	char buffer[20] = {-1,};
 	sscanf(input,"%s %s",instructionName, buffer);
 	if(!strcmp(instructionName, instruction[instNum = CREATE])){
 		createDataStructure(input+7);
@@ -26,8 +26,14 @@ bool inputCmpInst(char* input){
 		return true;
 	}
 	else if(!strcmp(instructionName, instruction[instNum = DUMPDATA])){
+		if(buffer[0] == -1){
+			return true;
+		}
 		dumpDataStructure(input+9);
 		return true;
+	}
+	else if(!strcmp(instructionName, instruction[instNum = DELETE])){
+		deleteDataStructure(input+7);
 	}
 	else if(!strcmp(instructionName, instruction[instNum = QUIT])){
 		return false;
@@ -40,11 +46,16 @@ bool inputCmpInst(char* input){
 }
 void dumpDataStructure(char* input){
 	int i=0, j=0;
+	//initialize all datastructure types
 	struct list* currList;
+
 	char dataStructureName[MAX_NAME_LENGTH];
 	sscanf(input,"%s", dataStructureName);
 	//dataStructureType contains type of structure. dataStructureName contains the name of it
 	if(currList = getListpointerByName(dataStructureName)){
+		if(list_empty(currList)){
+			return;
+		}
 		for(struct list_elem* e = list_begin(currList);e != list_tail(currList);e = list_next(e)){
 			struct list_item *f = list_entry(e, struct list_item, elem);
 			printf("%d ", f->data);
@@ -53,8 +64,47 @@ void dumpDataStructure(char* input){
 		return;
 	}
 
+	//write dumpdata for hashtable
+	//write dumpdata for bitmap
+	return;
 
-	
+}
+
+void deleteDataStructure(char* input){
+	int i=0;
+	//initialize all datastructure types
+	struct list* currList;
+	struct list_elem* nextnode;
+	char dataStructureName[MAX_NAME_LENGTH];
+	sscanf(input,"%s", dataStructureName);
+	//dataStructureType contains type of structure. dataStructureName contains the name of it
+	if(currList = getListpointerByName(dataStructureName)){
+		if(!list_empty(currList)){
+			for(struct list_elem* e = list_begin(currList);e != list_tail(currList);e = list_next(e)){
+				struct list_item *f = list_entry(e, struct list_item, elem);
+				free(f);
+			}
+			for(struct list_elem* e = list_begin(currList);e != list_tail(currList);e = nextnode){
+				nextnode = list_next(e);
+				free(e);
+			}
+		}
+		for(i=0;i<MAX_LISTS;++i){
+			if(!strcmp(dataStructureName,listNames[i])){
+				free(lists[i]);
+				listNum--;
+				for(i=0;i<listNum;++i){
+					lists[i] = lists[i+1];
+					listNames[i] = listNames[i+1];
+				}
+				return;
+			}
+		}
+		return;
+	}
+
+
+
 	//write dumpdata for hashtable
 	//write dumpdata for bitmap
 	return;
@@ -76,8 +126,6 @@ void createDataStructure(char* input){
 		//initialize operation
 		list_init(lists[listNum]);
 		strcpy(listNames[listNum],dataStructureName);
-
-		printf("name : %s\n",listNames[listNum]);
 		//lists[0]->head
 		listNum++;
 	}
@@ -94,8 +142,52 @@ void inputCmpListInst(char* input){
 	struct list_items* currListItem;
 	char listOperationName[MAX_LISTOP_LENGTH];
 	char dataStructureName[MAX_NAME_LENGTH];
-	int newdata, newdata2;
+	char dataStructureName2[MAX_NAME_LENGTH] = {-1, };
+	int newdata, newdata2, newdata3;
+	int listSize=0;
 	int i=0;
+	//splice has a different format
+	if(sscanf(input, "%s %s %d %s %d %d",listOperationName, dataStructureName, &newdata, dataStructureName2, &newdata2, &newdata3) == 6){
+		if(!strcmp(listOperationName, listInstruction[instListNum = SPLICE])){
+			int curridx = 0;
+			int insertidx =0;
+			struct list_item* itemp;
+			struct list* list1 = getListpointerByName(dataStructureName);
+			struct list* list2 = getListpointerByName(dataStructureName2);
+			struct list_elem* insertnode = list_begin(list1);
+			struct list_elem* startnode = list_begin(list2);
+			struct list_elem* endnode = list_begin(list2);
+
+			for(insertidx=0;insertidx < newdata; insertidx++){
+				insertnode = list_next(insertnode);
+			}
+
+			for(curridx = 0; curridx<newdata2; curridx++){
+				startnode = list_next(startnode);
+			}
+
+			for(curridx = 0;curridx<newdata3; curridx++){
+
+				endnode = list_next(endnode);
+			}
+			list_splice(insertnode, startnode, endnode);
+
+		}
+		return;
+	}
+	else if(sscanf(input,"%s %s %s",listOperationName, dataStructureName, dataStructureName2) >= 2){
+		if(!strcmp(listOperationName, listInstruction[instListNum = UNIQUE])){
+			struct list* list1 = getListpointerByName(dataStructureName);
+			if(dataStructureName2[0] == -1){
+				list_unique(list1, NULL, func, 0);
+			}
+			else{		
+			struct list* list2 = getListpointerByName(dataStructureName2);
+				list_unique(list1, list2, func, 0);
+			}
+			return;
+		}
+	}
 	sscanf(input,"%s %s %d %d",listOperationName,dataStructureName,&newdata,&newdata2);
 	//search for list with name of dataStructureName
 	if(!(currList = getListpointerByName(dataStructureName))){
@@ -112,7 +204,7 @@ void inputCmpListInst(char* input){
 		itemp->data = newdata;
 
 	}
-	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_FRONT])){
+	else if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_FRONT])){
 		struct list_elem* newnodep;
 		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
 
@@ -153,10 +245,29 @@ void inputCmpListInst(char* input){
 		struct list_item* itemp = list_entry(endnodep, struct list_item, elem);
 		printf("%d\n",itemp->data);
 	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = SORT])){
+		list_sort(currList, func, 0);
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT])){
+		int idx = newdata;
+		struct list_elem* e = list_begin(currList);
+		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
+		struct list_item* itemp = (struct list_item*)malloc(sizeof(struct list_elem));
+		itemp = list_entry(newnode,struct list_item, elem);
+		itemp->data = newdata2;
+
+		for(int curridx = 0; curridx<idx;++curridx){
+			e = list_next(e);
+		}
+		list_insert(e, newnode);
+	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT_ORDERED])){
-		/*struct list_elem
-		  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@how to use list_less_func by pointer??
-		list_insert_ordered(struct list*, struct list_elem*, list_less_func*, void*);*/
+		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
+
+		struct list_item* itemp = (struct list_item*)malloc(sizeof(struct list_elem));
+		itemp = list_entry(newnode,struct list_item, elem);
+		itemp->data = newdata;
+		list_insert_ordered(currList, newnode, func, 0);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = EMPTY])){
 		if(list_empty(currList)){
@@ -170,30 +281,52 @@ void inputCmpListInst(char* input){
 		printf("%d\n",(int)list_size(currList));
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = MAX])){
-		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@how to use list_less_func
-		//list_max(currList, )
+		struct list_elem* maxelem;
+		maxelem = list_max( currList, func, 0 );
+		printf("%d\n",list_entry(maxelem, struct list_item, elem)->data);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = MIN])){
-
+		struct list_elem* minelem;
+		minelem = list_min( currList, func, 0 );
+		printf("%d\n",list_entry(minelem, struct list_item, elem)->data);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SWAP])){
 		struct list_elem* node1 = list_head(currList);
 		struct list_elem* node2 = list_head(currList);
 
-		for(int i=0;i<newdata;++i){
+		for(int i=0;i<newdata+1;++i){
 			node1 = list_next(node1);
 		}
-		for(int i=0;i<newdata2;++i){
+		for(int i=0;i<newdata2+1;++i){
 			node2 = list_next(node2);
 		}
-		struct list_item* itemp1 = list_entry(node1, struct list_item, elem);
-		struct list_item* itemp2 = list_entry(node2, struct list_item, elem);
-		//swap(itemp1->data, itemp2->data);
-		//swap(&node1, &node2);
-		//swap implicit declarationd@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		list_swap(node1, node2);
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = REVERSE])){
+		list_reverse(currList);
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SHUFFLE])){
-		//no shuffle? @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		for(struct list_elem* e = list_begin(currList);e != list_tail(currList);e = list_next(e)){
+			for(struct list_elem* f = list_begin(currList);f != list_tail(currList); f = list_next(f)){
+				if(rand()%2){
+					list_swap(e, f);
+				}
+			}
+		}
+
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = REMOVE])){
+		int idx = newdata;
+		struct list_elem* e = list_begin(currList);
+		struct list_item* itemp;
+
+		for(int curridx = 0; curridx<idx;++curridx){
+			e = list_next(e);
+		}
+
+		itemp = list_entry(e,struct list_item, elem);
+		list_remove(e);
+		free(itemp);
 	}
 	return;
 }
@@ -206,4 +339,65 @@ struct list* getListpointerByName(char* name){
 		}
 	}
 	return NULL;
+}
+
+void inputCmpHashtableInst(char* input){
+	struct list* currList;
+	struct list_items* currListItem;
+	char listOperationName[MAX_LISTOP_LENGTH];
+	char dataStructureName[MAX_NAME_LENGTH];
+	int newdata, newdata2;
+	int i=0;
+	sscanf(input,"%s %s %d %d",listOperationName,dataStructureName,&newdata,&newdata2);
+	//search for list with name of dataStructureName
+	if(!(currList = getListpointerByName(dataStructureName))){
+		return;
+	}
+	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_BACK])){
+		struct list_elem* newnodep;
+		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
+
+		list_push_back(currList,newnode);
+		newnodep = list_tail(currList)->prev;
+		//initialize and data input in list_item
+		struct list_item* itemp = list_entry(newnodep, struct list_item, elem);
+		itemp->data = newdata;
+
+	}
+	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_FRONT])){
+		struct list_elem* newnodep;
+		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
+
+		list_push_front(currList,newnode);
+		newnodep = list_head(currList)->next;
+
+		struct list_item* itemp = list_entry(newnodep, struct list_item, elem);
+		itemp->data = newdata;
+
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = POP_BACK])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = POP_FRONT])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = FRONT])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = BACK])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT_ORDERED])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = EMPTY])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = SIZE])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = MAX])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = MIN])){
+
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = SWAP])){
+	}
+	else if(!strcmp(listOperationName, listInstruction[instListNum = REMOVE])){
+		//free
+	}
+	return;
 }

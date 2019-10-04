@@ -1,7 +1,0 @@
-create list list0
-list_push_back list0 10
-list_push_back list0 20
-list_push_back list0 30
-list_push_front list0 0
-list_pop_back list0
-dumpdata list0
