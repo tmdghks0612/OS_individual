@@ -29,6 +29,10 @@ char* listInstruction[] = {
 	"push_back", "push_front", "pop_back","pop_front", "front", "back", "insert_ordered", "empty", "size", "max", "min", "swap", "shuffle", "remove", "sort", "insert", "reverse", "splice", "unique"
 };
 
+char* hasInstruction[] = {
+	"apply"
+};
+
 enum ListOp{
 	PUSH_BACK = 0,
 	PUSH_FRONT= 1,
@@ -51,6 +55,10 @@ enum ListOp{
 	UNIQUE = 18
 };
 enum ListOp instListNum;
+
+enum HashOp{
+	APPLY = 0
+}
 
 char* dataStructure[] = {
 	"list", "hashtable", "bitmap"
