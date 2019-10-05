@@ -23,6 +23,23 @@ static void rehash (struct hash *);
 
 /* Initializes hash table H to compute hash values using HASH and
    compare hash elements using LESS, given auxiliary data AUX. */
+
+unsigned hashHashFunc(const struct hash_elem *e , void* aux){
+	struct hash_item* itemp = hash_entry(e, struct hash_item, elem);
+	return abs(itemp->data)%4;
+}
+
+bool hashLessFunc(const struct hash_elem *a, const struct hash_elem *b, void* aux){
+	struct hash_item* itemp1 = hash_entry(a, struct hash_item, elem);
+	struct hash_item* itemp2 = hash_entry(b, struct hash_item, elem);
+	if(itemp1->data < itemp2->data){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
 bool
 hash_init (struct hash *h,
            hash_hash_func *hash, hash_less_func *less, void *aux) 

@@ -130,6 +130,15 @@ void createDataStructure(char* input){
 		listNum++;
 	}
 	else if(!strcmp(dataStructureType, dataStructure[dataStructureNum = HASHTABLE])){
+		hashs[hashNum] = (struct hash*)malloc(sizeof(struct hash));
+		hashNames[hashNum] = (char*)malloc(sizeof(char) * MAX_NAME_LENGTH);
+
+		if(hash_init(hashs[hashNum],hashHashFunc ,hashLessFunc , 0)){
+			printf("Initialize memory error!\n");
+		}
+		else{
+			hashNum++;
+		}
 	}
 	else if(!strcmp(dataStructureType, dataStructure[dataStructureNum = BITMAP])){
 	}
@@ -182,7 +191,7 @@ void inputCmpListInst(char* input){
 				list_unique(list1, NULL, func, 0);
 			}
 			else{		
-			struct list* list2 = getListpointerByName(dataStructureName2);
+				struct list* list2 = getListpointerByName(dataStructureName2);
 				list_unique(list1, list2, func, 0);
 			}
 			return;
@@ -248,7 +257,7 @@ void inputCmpListInst(char* input){
 	else if(!strcmp(listOperationName, listInstruction[instListNum = SORT])){
 		list_sort(currList, func, 0);
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT])){
+	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT_L])){
 		int idx = newdata;
 		struct list_elem* e = list_begin(currList);
 		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
@@ -269,7 +278,7 @@ void inputCmpListInst(char* input){
 		itemp->data = newdata;
 		list_insert_ordered(currList, newnode, func, 0);
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = EMPTY])){
+	else if(!strcmp(listOperationName, listInstruction[instListNum = EMPTY_L])){
 		if(list_empty(currList)){
 			printf("true\n");
 		}
@@ -277,7 +286,7 @@ void inputCmpListInst(char* input){
 			printf("false\n");
 		}
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = SIZE])){
+	else if(!strcmp(listOperationName, listInstruction[instListNum = SIZE_L])){
 		printf("%d\n",(int)list_size(currList));
 	}
 	else if(!strcmp(listOperationName, listInstruction[instListNum = MAX])){
@@ -342,62 +351,45 @@ struct list* getListpointerByName(char* name){
 }
 
 void inputCmpHashtableInst(char* input){
-	struct list* currList;
-	struct list_items* currListItem;
-	char listOperationName[MAX_LISTOP_LENGTH];
+	struct hash* currHash;
+	char HashOperationName[MAX_HASHOP_LENGTH];
 	char dataStructureName[MAX_NAME_LENGTH];
-	int newdata, newdata2;
-	int i=0;
-	sscanf(input,"%s %s %d %d",listOperationName,dataStructureName,&newdata,&newdata2);
+	char newdata[MAX_HASHOP_LENGTH];
+	int i=0,value=0;
+	sscanf(input,"%s %s %s",HashOperationName,dataStructureName,newdata);
 	//search for list with name of dataStructureName
-	if(!(currList = getListpointerByName(dataStructureName))){
+	if(!(currList = getHashpointerByName(dataStructureName))){
 		return;
 	}
-	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_BACK])){
-		struct list_elem* newnodep;
-		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
-
-		list_push_back(currList,newnode);
-		newnodep = list_tail(currList)->prev;
-		//initialize and data input in list_item
-		struct list_item* itemp = list_entry(newnodep, struct list_item, elem);
-		itemp->data = newdata;
-
+	if(!strcmp(HashOperationName, hashInstruction[instHashNum = APPLY])){
 	}
-	if(!strcmp(listOperationName, listInstruction[instListNum = PUSH_FRONT])){
-		struct list_elem* newnodep;
-		struct list_elem* newnode = (struct list_elem*)malloc(sizeof(struct list_elem));
-
-		list_push_front(currList,newnode);
-		newnodep = list_head(currList)->next;
-
-		struct list_item* itemp = list_entry(newnodep, struct list_item, elem);
-		itemp->data = newdata;
-
+	if(!strcmp(hashOperationName, hashInstruction[instHashNum = CLEAR])){
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = POP_BACK])){
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = DELETE_H])){
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = POP_FRONT])){
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = EMPTY_H])){
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = FRONT])){
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = FIND])){
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = BACK])){
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = INSERT_H])){
+		value = atoi(newdata);
+		hash_insert(currHash, hash_elem*);
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = INSERT_ORDERED])){
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = INT_2])){
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = EMPTY])){
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = REPLACE])){
 	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = SIZE])){
-	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = MAX])){
-	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = MIN])){
-
-	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = SWAP])){
-	}
-	else if(!strcmp(listOperationName, listInstruction[instListNum = REMOVE])){
-		//free
+	else if(!strcmp(hashOperationName, hashInstruction[instHashNum = SIZE_H])){
 	}
 	return;
+}
+
+struct hash* getHashpointerByName(char* name){
+	int i=0;
+	for(i=0;i<MAX_HASHS;++i){
+		if(!strcmp(name,hashNames[i])){
+			return hashs[i];
+		}
+	}
+	return NULL;
 }

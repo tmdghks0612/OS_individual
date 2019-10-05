@@ -23,13 +23,20 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <math.h>
 #include "list.h"
 
 /* Hash element. */
 struct hash_elem 
   {
-    struct list_elem list_elem;
+    struct list_elem* list_elem;
   };
+
+struct hash_item
+{
+	struct hash_elem* elem;
+	int data;
+};
 
 /* Converts pointer to hash element HASH_ELEM into a pointer to
    the structure that HASH_ELEM is embedded inside.  Supply the
@@ -44,6 +51,7 @@ struct hash_elem
    auxiliary data AUX. */
 typedef unsigned hash_hash_func (const struct hash_elem *e, void *aux);
 
+unsigned hashHashFunc(const struct hash_elem *e, void *aux);
 /* Compares the value of two hash elements A and B, given
    auxiliary data AUX.  Returns true if A is less than B, or
    false if A is greater than or equal to B. */
@@ -51,10 +59,12 @@ typedef bool hash_less_func (const struct hash_elem *a,
                              const struct hash_elem *b,
                              void *aux);
 
+bool hashLessFunc(const struct hash_elem *a, const struct hash_elem *b, void *aux);
 /* Performs some operation on hash element E, given auxiliary
    data AUX. */
 typedef void hash_action_func (struct hash_elem *e, void *aux);
 
+bool hashActionFunc(struct hash_elem *e, void *aux);
 /* Hash table. */
 struct hash 
   {
